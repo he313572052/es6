@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+</body>
+<script>
+    'use strict'
+    const dom = new Proxy({}, {
+        get(target, propKey) {
+            return (attrs = {}, ...children) => {
+                const ele = document.createElement(propKey);
+                for (let prop of Object.keys(attrs)) {
+                    ele.setAttribute(prop, attrs[prop]);
+                }
+                for (let child of children) {
+                    if (typeof child === 'string') {
+                        child = document.createTextNode(child);
+                    }
+                    ele.appendChild(child);
+                }
+                return ele;
+            }
+        }
+    })
+    const el = dom.div({},
+        '你好世界',
+        dom.ul({
+                backgroud: 'red'
+            },
+            dom.li({}, '1111111'),
+            dom.li({}, '22222222'),
+            dom.li({}, '33333')), dom.a({
+            href: 'http://www.baidu.com',
+            target: '_blank'
+        }, '百度一下'));
+    document.body.appendChild(el);
+</script>
+
+</html>
